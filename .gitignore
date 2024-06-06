@@ -1,0 +1,9 @@
+# Ignore everything. This is because I have the MarkovJunior executable in my git folder
+*
+
+# Reverse Ignoring for my own files
+!.gitignore
+!MarkovJuniorHelper.ps1
+!models/
+!models/*
+!models.xml
