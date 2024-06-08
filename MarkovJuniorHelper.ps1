@@ -101,18 +101,19 @@ if (!$NoPaletteGen) {
 
 # Delete some files. If take each is at 2, every odd file will be deleted. If TakeEach is at 3, only 0.png, 3.png, 6.png are left afterwards...
 
+
 $FinalFrame = $(Get-ChildItem $OriginalOutputFolder -File | Sort-Object -Descending {[int]($_.basename -replace '\D')} | Select-Object -First 1)
 
 if ($TakeEach -gt 1) {
     $count = $TakeEach
-    prt $TakeEach Red Black
+    prt "Keeping only every $TakeEach files..." Red Black
     foreach ($file in $(Get-ChildItem $OriginalOutputFolder -File | Sort-Object {[int]($_.basename -replace '\D')})) {
         if ($count -eq $TakeEach) {
             $count = 0
         }
         else {
             if ("$file" -ne "$FinalFrame") {
-                prt $file Red Black
+                #prt $file Red Black
                 Remove-Item $OriginalOutputFolder/$file
             }
         }
