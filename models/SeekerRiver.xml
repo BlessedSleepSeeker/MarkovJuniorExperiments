@@ -1,0 +1,56 @@
+<sequence values="BWRUGEKF">
+    <!-- River Gen -->
+    <one in="B" out="W" steps="1" />
+    <one in="B" out="R" steps="1" />
+    <one>
+        <rule in="WB" out="WW" />
+        <rule in="RB" out="RR" />
+    </one>
+    <one in="RW" out="UU"/>
+
+    <!-- Back To Black + Widen River -->
+    <one in="R" out="E" steps="3" />
+    <one in="W" out="E" steps="3" />
+    <all>
+        <rule in="W" out="B" />
+        <rule in="R" out="B" />
+    </all>
+    <all in="UB" out="UU" steps="2" />
+
+    <!-- Lake Generation -->
+    <one in="U" out="R" steps="1" />
+    <one steps="800">
+        <rule in="RB" out="RR" />
+        <rule in="RU" out="RR" />
+    </one>
+
+    <!-- Island/SandBank 
+    <one in="R" out="F" steps="1" />
+    <one steps="50" >
+        <rule in="RF" out="FF" />
+    </one>-->
+
+    <!-- Convert Blood Lake to Water -->
+    <all in="R" out="U" />
+
+    <!-- Green around the body of water -->
+    <one in="UB" out="*G" />
+
+    <!-- Plains vs Forest -->
+    <one>
+        <rule in="BE" out="EE" />
+        <rule in="BG" out="GG" />
+    </one>
+
+    <!-- Cleaning -->
+    <all>
+       <rule in="EU" out="UU" />
+       <rule in="*U*/*GU/*U*" out="*U*/*UU/*U*" />
+       <rule in="*G*/*EG/*G*" out="*G*/*GG/*G*" />
+    </all>
+    
+    <!-- Plains Flowers Fields -->
+    <one in="G" out="K" steps="6" />
+    <one in="K*/*G" out="K*/*K" steps="120" />
+
+</sequence>

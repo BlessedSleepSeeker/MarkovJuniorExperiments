@@ -1,0 +1,8 @@
+<sequence values="BWGIR">
+    <one in="BB/BB" out="GW/WG" steps="1" />
+
+    <one>
+        <rule in="GW*/WG*" out="WGG/WWG" />
+    </one>
+    <!-- <one in="GI/BB" out="GG/GI" /> -->
+</sequence>
