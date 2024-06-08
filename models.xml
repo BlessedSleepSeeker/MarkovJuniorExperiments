@@ -1,8 +1,8 @@
 <models>
   
   <!-- <model name="River" size="80" amount="4"/> -->
-  <model name="SeekerRiver" size="80" amount="5" gif="False" gui="150" />
-  <!-- <model name="SeekerDance" size="30" amount="1" gif="True" gui="120" steps="1000" pixelsize="15" /> -->
+  <!-- <model name="SeekerRiver" size="80" amount="5" gif="False" gui="150" /> -->
+  <model name="MiddleFinder" size="50" amount="1" gif="True" gui="150" steps="100000" pixelsize="10" />
 
 
   gifs

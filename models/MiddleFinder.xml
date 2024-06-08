@@ -1,0 +1,17 @@
+<sequence values="BWGIR">
+    <one in="BB/BB" out="RG/GW" steps="1" />
+    <one in="BB/RG/GW" out="RG/GW/WW"/>
+    <all in="W" out="B"/>
+    <all in="G" out="B"/>
+    <one in="BB/BB/BR" out="BG/GG/GG" />
+    <!-- <one in="BB/BB/BB" out="GB/GG/GG" steps="1" /> -->
+    <sequence>
+        <sequence>
+            <one in="BB/GB/GG/GG" out="GB/GG/GG/IW" />
+            <one in="GGG/GG*/BBB" out="WGG/WGG/*BG" />
+        </sequence>
+        <one in="GBB/GGB/GG*" out="GGB/GGG/IW*" />
+    </sequence>
+    <one in="GB/GG/GG" out="BB/BB/WW"/>
+    <one in="*W*/WBB/*W*" out="***/WWB/***" />
+</sequence>
