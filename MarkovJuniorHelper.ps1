@@ -38,6 +38,7 @@ This will delete all content inside the $OriginalOutputFolder/, output/ by defau
 Param(
     [Parameter(Mandatory)] $OutputFolderName,
     $OriginalOutputFolder = "output",
+    $TakeEach = 1,
     [switch] $NoPaletteGen,
     [switch] $NoGif,
     [switch] $RemovePNG,
@@ -63,6 +64,10 @@ function prt {
 }
 
 $FullPath = "$OriginalOutputFolder/$OutputFolderName"
+$CreateDirCommand = "New-Item -ItemType Directory -Path '$FullPath\'"
+$RunMarkovCommand = ".\MarkovJunior.exe"
+$ffmpegPaletteCommand = "ffmpeg -y -i $OriginalOutputFolder/0.png -vf palettegen $FullPath/palette.png"
+$ffmpegGifCommand = "ffmpeg -framerate 50 -y -i '$OriginalOutputFolder/%d.png' -i $FullPath/palette.png -lavfi paletteuse -sws_dither none -loop -1 $FullPath/output.gif"
 
 if ($Clean) {
     Remove-Item -Path "$OriginalOutputFolder\*" -Recurse
@@ -72,44 +77,64 @@ if ($Clean) {
 if (!(Test-Path "$FullPath")) {
     prt "Folder not found at '${FullPath}'. Creating folder..." Yellow Black
     if ($Silent) {
-        New-Item -ItemType Directory -Path "$FullPath" | Out-Null
+        $CreateDirCommand = "$CreateDirCommand | Out-Null"
     }
-    else {
-        New-Item -ItemType Directory -Path "$FullPath"
-    }
-    
+    Invoke-Expression $CreateDirCommand
 }
 
 prt "Running MarkovJunior..." Yellow Black
 
 if ($Silent) {
-    .\MarkovJunior.exe | Out-Null
+    $RunMarkovCommand = "$RunMarkovCommand | Out-Null"
 }
-else {
-    .\MarkovJunior.exe
-}
+Invoke-Expression $RunMarkovCommand
 
 if (!$NoPaletteGen) {
     prt "Generating Palette..." Yellow Black
     #prt "ffmpeg -i $OriginalOutputFolder/0.png -vf palettegen $FullPath/palette.png" Red White
     if ($Silent) {
-        ffmpeg -y -i $OriginalOutputFolder/0.png -vf palettegen $FullPath/palette.png -hide_banner -loglevel error
+        $ffmpegPaletteCommand = "$ffmpegPaletteCommand -hide_banner -loglevel error"
     }
-    else {
-        ffmpeg -y -i $OriginalOutputFolder/0.png -vf palettegen $FullPath/palette.png
-    }
+    Invoke-Expression $ffmpegPaletteCommand
     prt "Palette generated at '${FullPath}/palette.png !" Green Black
+}
+
+# Delete some files. If take each is at 2, every odd file will be deleted. If TakeEach is at 3, only 0.png, 3.png, 6.png are left afterwards...
+
+$FinalFrame = $(Get-ChildItem $OriginalOutputFolder -File | Sort-Object -Descending {[int]($_.basename -replace '\D')} | Select-Object -First 1)
+
+if ($TakeEach -gt 1) {
+    $count = $TakeEach
+    prt $TakeEach Red Black
+    foreach ($file in $(Get-ChildItem $OriginalOutputFolder -File | Sort-Object {[int]($_.basename -replace '\D')})) {
+        if ($count -eq $TakeEach) {
+            $count = 0
+        }
+        else {
+            if ("$file" -ne "$FinalFrame") {
+                prt $file Red Black
+                Remove-Item $OriginalOutputFolder/$file
+            }
+        }
+        $count = $count + 1
+    }
+}
+
+# Rename the file to make them following (can't use wildcard matching on windows)
+
+$NewInt = 0
+foreach ($file in $(Get-ChildItem $OriginalOutputFolder -File | Sort-Object {[int]($_.basename -replace '\D')})) {
+    Rename-Item "$OriginalOutputFolder/$file" "$NewInt.png"
+    $NewInt = $NewInt + 1
 }
 
 if (!$NoGif) {
     prt "Generating GIF..." Yellow Black
     #prt "ffmpeg -framerate 50 -i $OriginalOutputFolder/%d.png -i $FullPath/palette.png -lavfi paletteuse -sws_dither none -loop -1 $FullPath/output.gif" Red White
     if ($Silent) {
-        ffmpeg -framerate 50 -y -i $OriginalOutputFolder/%d.png -i $FullPath/palette.png -lavfi paletteuse -sws_dither none -loop -1 $FullPath/output.gif -hide_banner -loglevel error
+        $ffmpegGifCommand = "$ffmpegGifCommand -hide_banner -loglevel error"
     }
-    else {
-        ffmpeg -framerate 50 -y -i $OriginalOutputFolder/%d.png -i $FullPath/palette.png -lavfi paletteuse -sws_dither none -loop -1 $FullPath/output.gif
-    }
+    Invoke-Expression $ffmpegGifCommand
     prt "GIF generated at '${FullPath}/output.gif" Green Black
 }
 

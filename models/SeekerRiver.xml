@@ -19,7 +19,7 @@
 
     <!-- Lake Generation -->
     <one in="U" out="R" steps="1" />
-    <one steps="800">
+    <one steps="300">
         <rule in="RB" out="RR" />
         <rule in="RU" out="RR" />
     </one>
@@ -51,6 +51,6 @@
     
     <!-- Plains Flowers Fields -->
     <one in="G" out="K" steps="6" />
-    <one in="K*/*G" out="K*/*K" steps="120" />
+    <one in="K*/*G" out="K*/*K" steps="60" />
 
 </sequence>
